@@ -18,6 +18,22 @@ double f(double x){
     return fabs(pow(x,4) - 15 * pow(x, 3) + 62 * pow(x, 2) - 48 * x);
 }
 
+double range(int a, int b){
+    double max = 0;
+    double min = 10;
+    double r;
+    for (r = a;r <= b;r += 0.01){
+        if(f(r) > max){
+            max = f(r);
+        }
+        if(f(r) < min){
+            min = f(r);
+        }
+    }
+    double ran = max -min;
+    return ran;
+}
+
 int main(void){
     sfmt_t sfmt;
     int i,j;
@@ -29,12 +45,15 @@ int main(void){
     double ans;
     int ja = 0;
     int jb = 10;
+    double ran = range(ja, jb);
+    int low = f(0);
+    printf("範囲:%lf\n",ran);
     while (ja != jb){
         ja = jb;
         for(i = 0;i < max;i++){
             for(j = 0;j < 1000;j ++){
                 x = sfmt_genrand_real2(&sfmt) * 10;
-                y = sfmt_genrand_real2(&sfmt) * 720;
+                y = sfmt_genrand_real2(&sfmt) * ran + low;
                 z = f(x);
                 if(y <= z){
                     count += 1;
@@ -42,11 +61,11 @@ int main(void){
             }
         }
         ans = (double)count / ((double)max * 1000);
-        ans *= 720;
+        ans *= ran;
         ans *= 10;
         printf("試行回数:%d,積分結果:%lf\n",max * 100,ans);
         max += 1000000;
-        jb = ans * 1000;
+        jb = ans * 1000 + 0.5;
         count = 0;
         
     }

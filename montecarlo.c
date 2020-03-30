@@ -47,21 +47,21 @@ double min(int a, int b){
 
 int main(void){
     sfmt_t sfmt;
-    int i,j;
+    int j;
     int seed = time(NULL);
     sfmt_init_gen_rand(&sfmt, seed);
     double x, y, z;
-    unsigned long int count;
+    unsigned long int i, count;
     double ans;
     i = 0;
     int start = 0;
     int finish = 10;
     double ran = range(start, finish);
-    int before = 0;
-    int after = 10;
+    unsigned long int before = 0;
+    unsigned long int after = 10;
     double low = min(start, finish);
     printf("range = %f\n",ran);
-    while (before = after){
+    while (before != after){
         before = after;
             for(j = 0;j < 1000;j ++){
                 x = sfmt_genrand_real2(&sfmt) * 10;
@@ -75,7 +75,7 @@ int main(void){
         ans = (double)count / ((double)i * 1000);
         ans *= ran;
         ans *= 10;
-        printf("試行回数:%d,積分結果:%lf\n",i * 1000,ans);
+        printf("試行回数:%u,積分結果:%lf\n",i * 1000,ans);
         after = ans * 1000 + 0.5;
     }
     printf("\n最終結果:%lf", ans);

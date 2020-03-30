@@ -63,7 +63,7 @@ int main(void){
     printf("range = %f\n",ran);
     while (before != after){
         before = after;
-            for(j = 0;j < 100000;j ++){
+            for(j = 0;j < 1000000;j ++){
                 x = sfmt_genrand_real2(&sfmt) * 10;
                 y = sfmt_genrand_real2(&sfmt) * ran + low;
                 z = f(x);
@@ -72,10 +72,10 @@ int main(void){
                 }
             }
         i += 1;
-        ans = (double)count / ((double)i * 100000);
+        ans = (double)count / ((double)i * 1000000);
         ans *= ran;
         ans *= 10;
-        printf("試行回数:%u,積分結果:%lf\n",i * 100000,ans);
+        printf("試行回数:%u,積分結果:%lf\n",i * 1000000,ans);
         after = ans * 10000 + 0.5;
     }
     printf("\n最終結果:%lf", ans);

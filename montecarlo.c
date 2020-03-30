@@ -34,23 +34,35 @@ double range(int a, int b){
     return ran;
 }
 
+double min(int a, int b){
+    double low = 10;
+    double r;
+    for (r = a;r <= b;r += 0.01){
+        if(f(r) < low){
+            low = f(r);
+        }
+    }
+    return low;
+}
+
 int main(void){
     sfmt_t sfmt;
     int i,j;
-    int max = 20000000;
     int seed = time(NULL);
     sfmt_init_gen_rand(&sfmt, seed);
     double x, y, z;
     unsigned long int count;
     double ans;
-    int ja = 0;
-    int jb = 10;
-    double ran = range(ja, jb);
-    int low = f(0);
-    printf("範囲:%lf\n",ran);
-    while (ja != jb){
-        ja = jb;
-        for(i = 0;i < max;i++){
+    i = 0;
+    int start = 0;
+    int finish = 10;
+    double ran = range(start, finish);
+    int before = 0;
+    int after = 10;
+    double low = min(start, finish);
+    printf("range = %f\n",ran);
+    while (before = after){
+        before = after;
             for(j = 0;j < 1000;j ++){
                 x = sfmt_genrand_real2(&sfmt) * 10;
                 y = sfmt_genrand_real2(&sfmt) * ran + low;
@@ -59,15 +71,12 @@ int main(void){
                     count += 1;
                 }
             }
-        }
-        ans = (double)count / ((double)max * 1000);
+        i += 1;
+        ans = (double)count / ((double)i * 1000);
         ans *= ran;
         ans *= 10;
-        printf("試行回数:%d,積分結果:%lf\n",max * 100,ans);
-        max += 1000000;
-        jb = ans * 1000 + 0.5;
-        count = 0;
-        
+        printf("試行回数:%d,積分結果:%lf\n",i * 1000,ans);
+        after = ans * 1000 + 0.5;
     }
     printf("\n最終結果:%lf", ans);
 }

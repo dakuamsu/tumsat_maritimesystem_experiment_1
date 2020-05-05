@@ -4,6 +4,7 @@
 #include<math.h>
 #include "SFMT-src-1.5.1/SFMT.h"
 
+/* 与式の関数 */
 double f(double x){
     double a, b, c, d;
     a = 0;
@@ -18,65 +19,45 @@ double f(double x){
     return fabs(pow(x,4) - 15 * pow(x, 3) + 62 * pow(x, 2) - 48 * x);
 }
 
+/* yの範囲を求めるための関数 */
 double range(int a, int b){
-    double max = 0;
-    double min = 10;
-    double r;
-    for (r = a;r <= b;r += 0.01){
-        if(f(r) > max){
-            max = f(r);
-        }
-        if(f(r) < min){
-            min = f(r);
+    double max = 0;  /* 最大値を保持する変数の初期化 */
+    double min = 0;
+    double i;
+    for (i = a; i <= b; i += 0.00001){
+        if(f(i) > max){
+            max = f(i);  /* 最大値の保持 */
         }
     }
     double ran = max -min;
     return ran;
 }
 
-double min(int a, int b){
-    double low = 10;
-    double r;
-    for (r = a;r <= b;r += 0.01){
-        if(f(r) < low){
-            low = f(r);
-        }
-    }
-    return low;
-}
-
 int main(void){
-    sfmt_t sfmt;
-    int j;
-    int seed = time(NULL);
-    sfmt_init_gen_rand(&sfmt, seed);
+    sfmt_t sfmt;  /* 構造体の保持 */
+    int seed = time(NULL);  /* 時刻情報を取得 */
+    sfmt_init_gen_rand(&sfmt, seed);  /* 時刻情報をシード値とする */
     double x, y, z;
-    unsigned long int i, count;
+    unsigned long int hit, count;
     double ans;
-    i = 0;
-    int start = 0;
-    int finish = 10;
-    double ran = range(start, finish);
-    unsigned long int before = 0;
-    unsigned long int after = 10;
-    double low = min(start, finish);
-    printf("range = %f\n",ran);
-    while (before != after){
-        before = after;
-            for(j = 0;j < 1000000;j ++){
+    count = hit = 0;  /* 内側にある回数と試行回数を保持する変数の初期化 */
+    double ran = range(0, 10);  /* yの範囲を求める関数を呼び出し */
+    double difference = 10;  /* 相対誤差を求める変数の初期化 */
+    double temp = 10;  /* S(n-10000)の解を保持する変数の初期化 */
+    while (difference >= 0.00001){
+            for(int j = 0;j < 1000;j ++){
                 x = sfmt_genrand_real2(&sfmt) * 10;
-                y = sfmt_genrand_real2(&sfmt) * ran + low;
+                y = sfmt_genrand_real2(&sfmt) * ran;
                 z = f(x);
                 if(y <= z){
-                    count += 1;
+                    hit += 1;  /* yの値が与式にxを代入をした値以下であるとき内側にあるとする */
                 }
+                count += 1;
             }
-        i += 1;
-        ans = (double)count / ((double)i * 1000000);
-        ans *= ran;
-        ans *= 10;
-        printf("試行回数:%u,積分結果:%lf\n",i * 1000000,ans);
-        after = ans * 10000 + 0.5;
+        ans = (double)hit / ((double)count) * ran * 10;  /* 面積の比率を求め面積をかける */
+        difference = fabs(temp - ans);  /* 相対誤差を求める */
+        temp = ans;  /* 現在の解を保持 */
     }
-    printf("\n最終結果:%lf", ans);
+    printf("x^4 -15 * x^3 + 62 * x^2 + 48 * xを[0,10]で積分した解は%lf", ans);
+    return 0;
 }
